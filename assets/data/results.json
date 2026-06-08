@@ -1,0 +1,217 @@
+{
+  "project": "GraspLens",
+  "seed": 0,
+  "train_scenes": 2000,
+  "test_scenes": 1000,
+  "candidates_per_object": 10,
+  "num_train_candidates": 99560,
+  "num_test_candidates": 50210,
+  "policy_backend": "numpy",
+  "policy_final_loss": 0.010250894021049782,
+  "policy_losses": [
+    0.4595070389489684,
+    0.04884206478155823,
+    0.03053638343233428,
+    0.02303695353896755,
+    0.01885770291655765,
+    0.016305071340148684,
+    0.014641460346401503,
+    0.013493715481463687,
+    0.012656195913604246,
+    0.0120525225420741,
+    0.011569607086096508,
+    0.01119883802774418,
+    0.010885659842491869,
+    0.01065056167450139,
+    0.01040181987512933,
+    0.010250894021049782
+  ],
+  "conformal": {
+    "alpha": 0.1,
+    "qhat": 0.6054285465895011,
+    "test_coverage": 0.9129057956582354,
+    "risk_threshold": 0.62
+  },
+  "metrics": [
+    {
+      "method": "baseline",
+      "unsafe_grasp_rate": 0.918,
+      "wrong_object_rate": 0.861,
+      "collision_rate": 0.002,
+      "low_clearance_rate": 0.918,
+      "semantic_hazard_rate": 0.084,
+      "success_rate": 0.078,
+      "target_contact_rate": 0.123,
+      "fallback_rate": 0.0,
+      "utility_regret": 1.6458021022081375
+    },
+    {
+      "method": "geometry",
+      "unsafe_grasp_rate": 0.004,
+      "wrong_object_rate": 0.001,
+      "collision_rate": 0.0,
+      "low_clearance_rate": 0.004,
+      "semantic_hazard_rate": 0.0,
+      "success_rate": 0.685,
+      "target_contact_rate": 0.688,
+      "fallback_rate": 0.004,
+      "utility_regret": 0.5044179915189743
+    },
+    {
+      "method": "probe",
+      "unsafe_grasp_rate": 0.642,
+      "wrong_object_rate": 0.315,
+      "collision_rate": 0.004,
+      "low_clearance_rate": 0.642,
+      "semantic_hazard_rate": 0.018,
+      "success_rate": 0.349,
+      "target_contact_rate": 0.662,
+      "fallback_rate": 0.477,
+      "utility_regret": 1.1907873771190642
+    },
+    {
+      "method": "grasplens_full",
+      "unsafe_grasp_rate": 0.004,
+      "wrong_object_rate": 0.001,
+      "collision_rate": 0.0,
+      "low_clearance_rate": 0.004,
+      "semantic_hazard_rate": 0.0,
+      "success_rate": 0.901,
+      "target_contact_rate": 0.904,
+      "fallback_rate": 0.576,
+      "utility_regret": 0.14969192636013032
+    }
+  ],
+  "probes": {
+    "collision_risk": {
+      "auroc": 0.9108426102200562,
+      "average_precision": 0.2698131977294967,
+      "sparsity": 48,
+      "top_dims": [
+        13,
+        32,
+        27,
+        43,
+        37,
+        8,
+        17,
+        3
+      ],
+      "top_weights": [
+        -1.1485432600538577,
+        -1.0552875291973185,
+        0.8421429356137082,
+        0.6999927544905231,
+        0.5296948099926185,
+        0.5072039655897677,
+        0.46259462251116634,
+        0.4488370122726589
+      ]
+    },
+    "wrong_object": {
+      "auroc": 0.9563763920094862,
+      "average_precision": 0.9805372543933217,
+      "sparsity": 47,
+      "top_dims": [
+        43,
+        27,
+        37,
+        26,
+        45,
+        3,
+        10,
+        1
+      ],
+      "top_weights": [
+        -1.7794802283289184,
+        -1.6109760444397712,
+        -1.584248824929389,
+        -1.1760060037421949,
+        -0.8630724980421803,
+        -0.8436153785219824,
+        -0.7732442130971748,
+        0.6718220604434486
+      ]
+    },
+    "low_clearance": {
+      "auroc": 0.9138196074851098,
+      "average_precision": 0.9879195982132276,
+      "sparsity": 47,
+      "top_dims": [
+        43,
+        37,
+        26,
+        45,
+        32,
+        5,
+        3,
+        12
+      ],
+      "top_weights": [
+        -1.2906107175096995,
+        -1.0615105300985368,
+        -0.6589208031059454,
+        -0.5666972381721378,
+        -0.5596164146961011,
+        0.5225962348967194,
+        -0.4783279026136685,
+        0.46371457127134985
+      ]
+    },
+    "semantic_hazard": {
+      "auroc": 0.9584490531244505,
+      "average_precision": 0.840524743716927,
+      "sparsity": 48,
+      "top_dims": [
+        27,
+        43,
+        37,
+        11,
+        1,
+        42,
+        32,
+        5
+      ],
+      "top_weights": [
+        4.102263957344903,
+        -2.8986100731049893,
+        -2.421280771004024,
+        1.9863820075645193,
+        1.8432060737501579,
+        1.6630259726615158,
+        -1.4807044005096082,
+        1.3235573434275185
+      ]
+    },
+    "unsafe": {
+      "auroc": 0.9141914422202827,
+      "average_precision": 0.9880923912879356,
+      "sparsity": 48,
+      "top_dims": [
+        43,
+        37,
+        26,
+        32,
+        45,
+        5,
+        3,
+        12
+      ],
+      "top_weights": [
+        -1.278043124340289,
+        -1.0631896869458572,
+        -0.6584730162267604,
+        -0.5765627555855116,
+        -0.5584968413088703,
+        0.5202681210495892,
+        -0.47462381563869444,
+        0.46792482363520166
+      ]
+    }
+  },
+  "activation_patching": {
+    "unsafe_rank_delta_positive_means_moves_up": 0.0,
+    "unsafe_score_delta": -0.9470754300951958,
+    "num_scenes": 1000
+  }
+}
