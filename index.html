@@ -23,11 +23,12 @@
         <span>GraspLens</span>
       </a>
       <nav class="nav-links" aria-label="Page sections">
+        <a href="#envelope">Envelope</a>
         <a href="#system">System</a>
         <a href="#method">Method</a>
         <a href="#benchmark">Benchmark</a>
         <a href="#results">Results</a>
-        <a href="#limits">Limits</a>
+        <a href="#limits">Scope</a>
       </nav>
       <a class="repo-link" href="https://github.com/vskates/grasplens">GitHub</a>
     </header>
@@ -81,11 +82,10 @@
           </div>
           <div class="lead-copy">
             <p>
-              The repository does not include robot logs or real grasp demonstrations. The
-              current run uses generated shelf scenes with exact geometry labels. The learned
-              scorer is trained on a shortcut-biased imitation target: in train scenes, red
-              objects usually indicate the target. In shifted test scenes, red distractors are
-              common.
+              The checked-in validation artifact is an offline generated-scene benchmark
+              with exact geometry labels. The learned scorer is trained on a shortcut-biased
+              imitation target: in train scenes, red objects usually indicate the target. In
+              shifted test scenes, red distractors are common.
             </p>
             <p>
               This gives a controlled setting for studying grasp ranking under distribution
@@ -97,7 +97,60 @@
         </div>
       </section>
 
-      <section class="section band" id="system" aria-labelledby="system-title">
+      <section class="section band" id="envelope" aria-labelledby="envelope-title">
+        <div class="section-grid">
+          <div>
+            <p class="section-label">Experimental envelope</p>
+            <h2 id="envelope-title">The benchmark is specified in metric lab coordinates.</h2>
+          </div>
+          <div class="envelope-stack">
+            <figure class="diagram-frame">
+              <img
+                src="assets/lab-envelope.svg"
+                alt="Metric validation envelope with Franka-class robot, overhead RGB-D map, 0.72 meter shelf ROI, grasp dimensions, clearance thresholds, and validation status."
+              />
+              <figcaption>
+                Reference lab envelope used to set scene scale, grasp geometry, and
+                predicate thresholds. The code evaluates selected grasp outcomes in this
+                metric envelope.
+              </figcaption>
+            </figure>
+            <div class="spec-grid">
+              <article>
+                <span>Robot envelope</span>
+                <strong>7-DoF arm, 855 mm reach, 3 kg payload</strong>
+                <p>Franka Research 3-class tabletop arm with a 2F-85-class parallel-jaw gripper and 85 mm opening.</p>
+              </article>
+              <article>
+                <span>Scene map</span>
+                <strong>0.72 m x 0.72 m top-down ROI</strong>
+                <p>Shelf interior is 0.662 m x 0.662 m; object boxes are 54-94 mm by 40-83 mm.</p>
+              </article>
+              <article>
+                <span>Candidate geometry</span>
+                <strong>115.2 mm x 39.6 mm grasp rectangle</strong>
+                <p>The approach sweep samples 18.0-129.6 mm along the approach vector using seven offsets.</p>
+              </article>
+              <article>
+                <span>Predicate gates</span>
+                <strong>8.6 mm minimum clearance threshold</strong>
+                <p>Collision, wrong-object contact, semantic hazard, target contact, and clearance are computed per candidate.</p>
+              </article>
+            </div>
+            <div class="scope-callout">
+              <strong>Validation boundary</strong>
+              <p>
+                Current metrics are from the checked-in offline benchmark: 2,000 train scenes,
+                1,000 shifted test scenes, and 50,210 shifted test candidates. The repository
+                defines the Isaac/ROS2 candidate interface, but does not include robot or
+                Isaac rollout logs.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="system" aria-labelledby="system-title">
         <div class="section-grid">
           <div>
             <p class="section-label">System model</p>
@@ -135,7 +188,7 @@
         </div>
       </section>
 
-      <section class="section" id="method" aria-labelledby="method-title">
+      <section class="section band" id="method" aria-labelledby="method-title">
         <div class="section-grid">
           <div>
             <p class="section-label">Method</p>
@@ -238,7 +291,8 @@
               <p>
                 Labels are computed directly from geometry: target contact, wrong-object
                 contact, collision, low approach clearance, semantic hazard, and final
-                success. This makes the benchmark reproducible before real robot logs exist.
+                success. The benchmark is deterministic with respect to the recorded seed and
+                candidate generator settings.
               </p>
               <ul class="tight-list">
                 <li>Policy backend in this run: NumPy implementation of the MLP-style scorer.</li>
@@ -265,7 +319,7 @@
         <div class="section-grid">
           <div>
             <p class="section-label">Results</p>
-            <h2 id="results-title">The full filter removes almost all unsafe selections in this benchmark.</h2>
+            <h2 id="results-title">The full filter removes almost all unsafe selections in the checked-in benchmark.</h2>
           </div>
           <div>
             <div class="metric-strip" aria-label="Key result metrics">
@@ -409,6 +463,7 @@
               <h3>Covered in this run</h3>
               <ul>
                 <li>A reproducible shortcut failure in learned grasp ranking.</li>
+                <li>A metric reference envelope for tabletop shelf-picking candidates.</li>
                 <li>A hard safety layer that rejects unsafe candidates by construction.</li>
                 <li>Activation-level probes that track safety concepts on shifted scenes.</li>
                 <li>A clean interface for replacing generated candidates with robot-generated candidates.</li>
@@ -417,7 +472,7 @@
             <div>
               <h3>Outside current run</h3>
               <ul>
-                <li>Hardware execution or closed-loop robot validation.</li>
+                <li>Hardware execution logs or Isaac Sim rollout traces.</li>
                 <li>Generalization to camera noise, depth artifacts, or control errors.</li>
                 <li>Safety for unmodeled hazards outside the predicate set.</li>
                 <li>Interpretability claims for a full VLA model.</li>
@@ -436,6 +491,7 @@
           <div class="artifact-actions">
             <a href="https://github.com/vskates/grasplens">Repository</a>
             <a href="assets/data/results.json">Results JSON</a>
+            <a href="assets/data/benchmark_spec.json">Benchmark Spec JSON</a>
             <a href="assets/data/metrics.csv">Metrics CSV</a>
           </div>
           <div class="run-command">

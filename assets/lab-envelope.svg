@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" role="img" aria-labelledby="title desc">
+  <title id="title">Metric validation envelope</title>
+  <desc id="desc">Reference lab envelope showing Franka-class arm, parallel-jaw gripper, overhead RGB-D map, metric shelf ROI, grasp candidate dimensions, predicate gates, and validation status.</desc>
+  <style>
+    svg {
+      background: #f7faf7;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    .title { fill: #17201d; font-size: 34px; font-weight: 880; }
+    .subtitle { fill: #65716c; font-size: 16px; font-weight: 620; }
+    .panel { fill: #ffffff; stroke: #d6ddd8; stroke-width: 2; }
+    .soft { fill: #fbfdfb; stroke: #d6ddd8; stroke-width: 1.5; }
+    .green { fill: #dff2ea; stroke: #087f5b; }
+    .blue { fill: #e8f1f7; stroke: #386f99; }
+    .amber { fill: #fff1de; stroke: #c8751a; }
+    .red { fill: #f8e2e7; stroke: #b21d3a; }
+    .ink { fill: #17201d; }
+    .muted { fill: #65716c; }
+    .label { fill: #17201d; font-size: 18px; font-weight: 850; }
+    .small { fill: #65716c; font-size: 13px; font-weight: 680; }
+    .tiny { fill: #65716c; font-size: 11px; font-weight: 700; }
+    .caption { fill: #087f5b; font-size: 12px; font-weight: 850; letter-spacing: 0.08em; }
+    .math { fill: #17201d; font-size: 15px; font-family: "SFMono-Regular", Consolas, monospace; font-weight: 760; }
+    .line { fill: none; stroke: #9aa5a0; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow); }
+    .dim { fill: none; stroke: #087f5b; stroke-width: 2.4; marker-start: url(#dim); marker-end: url(#dim); }
+    .grid { stroke: #e6ece8; stroke-width: 1; }
+  </style>
+  <defs>
+    <marker id="arrow" markerWidth="11" markerHeight="11" refX="9" refY="5.5" orient="auto">
+      <path d="M0,0 L10,5.5 L0,11 Z" fill="#9aa5a0" />
+    </marker>
+    <marker id="dim" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
+      <path d="M4,0 L8,4 L4,8 L0,4 Z" fill="#087f5b" />
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="1280" height="720" fill="#f7faf7" />
+  <text class="title" x="46" y="56">Metric validation envelope</text>
+  <text class="subtitle" x="46" y="86">The benchmark is evaluated in metric shelf-picking coordinates with a lab-reference robot envelope and explicit predicate thresholds.</text>
+
+  <rect class="panel" x="42" y="118" width="1196" height="502" rx="18" />
+
+  <g transform="translate(76 154)">
+    <text class="caption" x="0" y="0">REFERENCE LAB CELL</text>
+    <rect class="soft" x="0" y="22" width="286" height="330" rx="14" />
+    <circle cx="80" cy="252" r="28" fill="#dff2ea" stroke="#087f5b" stroke-width="3" />
+    <path d="M80 224L126 180L176 196L218 150" fill="none" stroke="#17201d" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" />
+    <circle cx="126" cy="180" r="14" fill="#ffffff" stroke="#17201d" stroke-width="5" />
+    <circle cx="176" cy="196" r="14" fill="#ffffff" stroke="#17201d" stroke-width="5" />
+    <rect x="212" y="134" width="48" height="24" rx="6" fill="#ffffff" stroke="#17201d" stroke-width="4" transform="rotate(-22 236 146)" />
+    <path d="M240 124L264 110M246 154L276 158" fill="none" stroke="#17201d" stroke-width="4" stroke-linecap="round" />
+    <rect class="blue" x="28" y="54" width="96" height="54" rx="10" />
+    <text class="small" x="44" y="86">RGB-D</text>
+    <path class="line" d="M76 108C80 150 106 166 142 178" />
+    <text class="label" x="24" y="292">Franka-class 7-DoF arm</text>
+    <text class="small" x="24" y="318">855 mm reach, 3 kg payload envelope</text>
+    <text class="small" x="24" y="340">2F-85-class parallel jaws, 85 mm stroke</text>
+  </g>
+
+  <g transform="translate(420 154)">
+    <text class="caption" x="0" y="0">CALIBRATED TOP-DOWN MAP</text>
+    <rect class="soft" x="0" y="22" width="384" height="330" rx="14" />
+    <rect x="42" y="58" width="280" height="280" rx="3" fill="#fbfdfb" stroke="#17201d" stroke-width="4" />
+    <path class="grid" d="M112 58V338M182 58V338M252 58V338M42 128H322M42 198H322M42 268H322" />
+    <rect x="118" y="126" width="70" height="48" rx="7" fill="#5aa574" stroke="#17201d" stroke-width="2.5" />
+    <rect x="216" y="220" width="70" height="48" rx="7" fill="#d95849" stroke="#626b66" stroke-width="2" />
+    <rect x="222" y="96" width="58" height="38" rx="7" fill="#d4b44b" stroke="#626b66" stroke-width="2" />
+    <rect x="70" y="238" width="44" height="40" rx="7" fill="#707873" stroke="#3c4340" stroke-width="2" />
+    <path class="dim" d="M42 368H322" />
+    <path class="dim" d="M12 58V338" />
+    <text class="math" x="126" y="394">0.72 m ROI</text>
+    <text class="math" x="-18" y="210" transform="rotate(-90 -18 210)">0.72 m ROI</text>
+    <rect class="green" x="228" y="304" width="122" height="34" rx="17" />
+    <text class="tiny" x="246" y="326">0.662 m shelf</text>
+    <text class="small" x="44" y="44">Normalized coordinates map to meters.</text>
+  </g>
+
+  <g transform="translate(856 154)">
+    <text class="caption" x="0" y="0">MEASURED GATES</text>
+    <rect class="soft" x="0" y="22" width="330" height="330" rx="14" />
+    <rect class="blue" x="24" y="54" width="282" height="64" rx="12" />
+    <text class="label" x="44" y="82">Grasp rectangle</text>
+    <text class="math" x="44" y="106">115.2 mm x 39.6 mm</text>
+    <rect class="green" x="24" y="138" width="282" height="64" rx="12" />
+    <text class="label" x="44" y="166">Approach sweep</text>
+    <text class="math" x="44" y="190">18.0-129.6 mm, 7 samples</text>
+    <rect class="amber" x="24" y="222" width="282" height="64" rx="12" />
+    <text class="label" x="44" y="250">Clearance gate</text>
+    <text class="math" x="44" y="274">min clearance &gt;= 8.6 mm</text>
+    <rect class="soft" x="24" y="306" width="282" height="44" rx="12" />
+    <text class="small" x="44" y="333">10 candidates/object, 50,210 test candidates</text>
+  </g>
+
+  <g transform="translate(76 642)">
+    <rect class="green" x="0" y="0" width="324" height="48" rx="12" />
+    <text class="label" x="18" y="29">Included: offline benchmark</text>
+    <rect class="blue" x="430" y="0" width="324" height="48" rx="12" />
+    <text class="label" x="448" y="29">Contract: Isaac / ROS2</text>
+    <rect class="amber" x="860" y="0" width="324" height="48" rx="12" />
+    <text class="label" x="878" y="29">No rollout logs in this repo</text>
+  </g>
+</svg>
