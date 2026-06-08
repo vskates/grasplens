@@ -100,37 +100,48 @@
             <p class="section-label">Method</p>
             <h2 id="method-title">One scorer, four selectors.</h2>
           </div>
-          <div class="method-flow" aria-label="GraspLens pipeline">
-            <div class="flow-item">
-              <span>1</span>
-              <strong>Generate candidates</strong>
-              <p>Top-down shelf scene, object boxes, obstacles, grasp rectangles.</p>
+          <div class="method-stack">
+            <div class="method-flow" aria-label="GraspLens pipeline">
+              <div class="flow-item">
+                <span>1</span>
+                <strong>Generate candidates</strong>
+                <p>Top-down shelf scene, object boxes, obstacles, grasp rectangles.</p>
+              </div>
+              <div class="flow-item">
+                <span>2</span>
+                <strong>Score grasps</strong>
+                <p>Small MLP-style scorer ranks candidates and exposes hidden activations.</p>
+              </div>
+              <div class="flow-item">
+                <span>3</span>
+                <strong>Check geometry</strong>
+                <p>Hard predicates reject collision, wrong-object, low-clearance and hazard cases.</p>
+              </div>
+              <div class="flow-item">
+                <span>4</span>
+                <strong>Probe latent risk</strong>
+                <p>Sparse logistic probes estimate unsafe concepts from hidden activations.</p>
+              </div>
+              <div class="flow-item">
+                <span>5</span>
+                <strong>Calibrate</strong>
+                <p>Split conformal prediction gates aggregate unsafe risk.</p>
+              </div>
+              <div class="flow-item">
+                <span>6</span>
+                <strong>Select grasp</strong>
+                <p>Choose the highest learned score among accepted candidates.</p>
+              </div>
             </div>
-            <div class="flow-item">
-              <span>2</span>
-              <strong>Score grasps</strong>
-              <p>Small MLP-style scorer ranks candidates and exposes hidden activations.</p>
-            </div>
-            <div class="flow-item">
-              <span>3</span>
-              <strong>Check geometry</strong>
-              <p>Hard predicates reject collision, wrong-object, low-clearance and hazard cases.</p>
-            </div>
-            <div class="flow-item">
-              <span>4</span>
-              <strong>Probe latent risk</strong>
-              <p>Sparse logistic probes estimate unsafe concepts from hidden activations.</p>
-            </div>
-            <div class="flow-item">
-              <span>5</span>
-              <strong>Calibrate</strong>
-              <p>Split conformal prediction gates aggregate unsafe risk.</p>
-            </div>
-            <div class="flow-item">
-              <span>6</span>
-              <strong>Select grasp</strong>
-              <p>Choose the highest learned score among accepted candidates.</p>
-            </div>
+            <figure class="image-frame trace-frame">
+              <img
+                src="assets/selection-trace.svg"
+                alt="Animated trace where a high-risk baseline grasp is rejected and GraspLens selects a target grasp."
+              />
+              <figcaption>
+                Decision trace: high learned score is not allowed to bypass the safety gates.
+              </figcaption>
+            </figure>
           </div>
         </div>
       </section>
@@ -394,4 +405,3 @@
     <script src="assets/site.js"></script>
   </body>
 </html>
-

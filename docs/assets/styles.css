@@ -297,6 +297,11 @@ p {
   border-left: 1px solid var(--line);
 }
 
+.method-stack {
+  display: grid;
+  gap: 28px;
+}
+
 .flow-item {
   min-height: 190px;
   padding: 24px;
@@ -387,9 +392,13 @@ pre {
 
 .image-frame img {
   width: 100%;
-  aspect-ratio: 1.18 / 1;
+  aspect-ratio: 1.62 / 1;
   object-fit: contain;
   background: #ffffff;
+}
+
+.trace-frame img {
+  background: #f7faf7;
 }
 
 .image-frame figcaption {

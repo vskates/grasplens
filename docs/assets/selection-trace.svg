@@ -1,0 +1,289 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520" role="img" aria-labelledby="title desc">
+  <title id="title">Animated GraspLens selection trace</title>
+  <desc id="desc">A red baseline grasp pulses on a distractor, is rejected by safety gates, and a green GraspLens grasp pulses on the target.</desc>
+  <style>
+    :root {
+      --ink: #17201d;
+      --muted: #65716c;
+      --line: #d6ddd8;
+      --paper: #f7faf7;
+      --panel: #ffffff;
+      --red: #b21d3a;
+      --red-soft: #f8e2e7;
+      --green: #087f5b;
+      --green-soft: #dff2ea;
+      --amber: #c8751a;
+      --blue: #386f99;
+    }
+
+    svg {
+      background: var(--paper);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    .title {
+      fill: var(--ink);
+      font-size: 31px;
+      font-weight: 860;
+    }
+
+    .subtitle,
+    .label,
+    .small {
+      fill: var(--muted);
+    }
+
+    .subtitle {
+      font-size: 16px;
+      font-weight: 620;
+    }
+
+    .label {
+      font-size: 14px;
+      font-weight: 760;
+    }
+
+    .small {
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .shelf {
+      fill: #fbfdfb;
+      stroke: var(--ink);
+      stroke-width: 4;
+    }
+
+    .grid {
+      stroke: #e9eee9;
+      stroke-width: 1.4;
+    }
+
+    .target {
+      fill: #65ad7b;
+      stroke: var(--ink);
+      stroke-width: 3;
+    }
+
+    .distractor {
+      fill: #d95849;
+      stroke: #6a6f6b;
+      stroke-width: 2.2;
+    }
+
+    .hazard {
+      fill: none;
+      stroke: rgba(23, 32, 29, 0.38);
+      stroke-width: 2;
+    }
+
+    .obstacle {
+      fill: #737b76;
+      stroke: #3f4642;
+      stroke-width: 2;
+    }
+
+    .candidate {
+      fill: none;
+      stroke: rgba(178, 29, 58, 0.36);
+      stroke-width: 2.2;
+    }
+
+    .baseline-grasp {
+      fill: none;
+      stroke: var(--red);
+      stroke-width: 8;
+      transform-origin: 438px 274px;
+      animation: baselinePulse 4.6s ease-in-out infinite;
+    }
+
+    .full-grasp {
+      fill: none;
+      stroke: var(--green);
+      stroke-width: 8;
+      transform-origin: 246px 178px;
+      animation: fullPulse 4.6s ease-in-out infinite;
+    }
+
+    .reject-x {
+      stroke: var(--red);
+      stroke-width: 6;
+      stroke-linecap: round;
+      opacity: 0;
+      animation: rejectIn 4.6s ease-in-out infinite;
+    }
+
+    .accepted-ring {
+      fill: none;
+      stroke: var(--green);
+      stroke-width: 4;
+      opacity: 0;
+      animation: acceptedRing 4.6s ease-in-out infinite;
+    }
+
+    .gate {
+      fill: var(--panel);
+      stroke: var(--line);
+      stroke-width: 2;
+    }
+
+    .gate-hot {
+      animation: gateHot 4.6s ease-in-out infinite;
+    }
+
+    .gate-ok {
+      animation: gateOk 4.6s ease-in-out infinite;
+    }
+
+    .arrow {
+      fill: none;
+      stroke: var(--line);
+      stroke-width: 3;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .trace-red {
+      stroke: var(--red);
+      stroke-dasharray: 420;
+      stroke-dashoffset: 420;
+      animation: drawRed 4.6s ease-in-out infinite;
+    }
+
+    .trace-green {
+      stroke: var(--green);
+      stroke-dasharray: 420;
+      stroke-dashoffset: 420;
+      animation: drawGreen 4.6s ease-in-out infinite;
+    }
+
+    .badge {
+      fill: var(--panel);
+      stroke: var(--line);
+      stroke-width: 1.5;
+    }
+
+    .badge-red {
+      fill: var(--red-soft);
+      stroke: var(--red);
+      animation: badgeRed 4.6s ease-in-out infinite;
+    }
+
+    .badge-green {
+      fill: var(--green-soft);
+      stroke: var(--green);
+      animation: badgeGreen 4.6s ease-in-out infinite;
+    }
+
+    @keyframes baselinePulse {
+      0%, 12%, 100% { opacity: 0.35; transform: rotate(-6deg) scale(0.98); }
+      18%, 34% { opacity: 1; transform: rotate(-6deg) scale(1.04); }
+      48%, 88% { opacity: 0.16; transform: rotate(-6deg) scale(0.98); }
+    }
+
+    @keyframes fullPulse {
+      0%, 42%, 100% { opacity: 0.28; transform: rotate(-13deg) scale(0.98); }
+      58%, 86% { opacity: 1; transform: rotate(-13deg) scale(1.04); }
+    }
+
+    @keyframes rejectIn {
+      0%, 26%, 100% { opacity: 0; }
+      34%, 56% { opacity: 1; }
+      70% { opacity: 0; }
+    }
+
+    @keyframes acceptedRing {
+      0%, 48%, 100% { opacity: 0; transform: scale(0.96); }
+      64%, 88% { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes gateHot {
+      0%, 20%, 100% { fill: var(--panel); stroke: var(--line); }
+      30%, 50% { fill: var(--red-soft); stroke: var(--red); }
+    }
+
+    @keyframes gateOk {
+      0%, 46%, 100% { fill: var(--panel); stroke: var(--line); }
+      58%, 88% { fill: var(--green-soft); stroke: var(--green); }
+    }
+
+    @keyframes drawRed {
+      0%, 14% { stroke-dashoffset: 420; opacity: 0; }
+      28%, 48% { stroke-dashoffset: 0; opacity: 1; }
+      62%, 100% { opacity: 0; }
+    }
+
+    @keyframes drawGreen {
+      0%, 48% { stroke-dashoffset: 420; opacity: 0; }
+      64%, 90% { stroke-dashoffset: 0; opacity: 1; }
+      100% { opacity: 0; }
+    }
+
+    @keyframes badgeRed {
+      0%, 22%, 100% { opacity: 0.55; }
+      32%, 58% { opacity: 1; }
+    }
+
+    @keyframes badgeGreen {
+      0%, 48%, 100% { opacity: 0.55; }
+      62%, 90% { opacity: 1; }
+    }
+  </style>
+
+  <rect x="0" y="0" width="960" height="520" fill="#f7faf7" />
+  <text class="title" x="42" y="54">Runtime selection trace</text>
+  <text class="subtitle" x="42" y="82">The learned score proposes; hard predicates and calibrated risk decide what is executable.</text>
+
+  <g transform="translate(42 116)">
+    <rect class="shelf" x="0" y="0" width="520" height="360" rx="2" />
+    <path class="grid" d="M104 0V360M208 0V360M312 0V360M416 0V360M0 90H520M0 180H520M0 270H520" />
+
+    <rect class="target" x="178" y="112" width="94" height="54" rx="8" />
+    <text x="225" y="145" text-anchor="middle" fill="#17201d" font-weight="850" font-size="15">TARGET</text>
+    <rect class="distractor" x="364" y="214" width="92" height="58" rx="8" />
+    <path class="hazard" d="M370 266L452 218M384 272L456 230M366 248L422 216" />
+    <text x="410" y="250" text-anchor="middle" fill="#17201d" font-weight="850" font-size="15">RED D</text>
+    <rect class="distractor" x="312" y="78" width="78" height="48" rx="8" fill="#d4b44b" />
+    <rect class="obstacle" x="74" y="236" width="48" height="44" rx="8" />
+    <rect class="obstacle" x="420" y="72" width="70" height="42" rx="8" />
+
+    <path class="candidate" d="M346 196l96 -18l12 62l-96 18z" />
+    <path class="candidate" d="M330 242l104 -20l10 54l-104 20z" />
+    <path class="candidate" d="M372 184l90 18l-14 62l-90 -18z" />
+    <path class="candidate" d="M170 94l56 -12l22 112l-56 12z" />
+    <path class="candidate" d="M196 86l54 8l-14 102l-54 -8z" stroke="rgba(56,111,153,0.32)" />
+
+    <path class="baseline-grasp" d="M380 188l58 -10l20 118l-58 10z" />
+    <path class="full-grasp" d="M184 84l58 -13l27 126l-58 13z" />
+    <g class="reject-x">
+      <line x1="382" y1="202" x2="458" y2="292" />
+      <line x1="458" y1="202" x2="382" y2="292" />
+    </g>
+    <ellipse class="accepted-ring" cx="225" cy="139" rx="74" ry="52" />
+
+    <rect class="badge badge-red" x="318" y="302" width="160" height="34" rx="17" />
+    <text x="398" y="324" text-anchor="middle" fill="#b21d3a" font-weight="850" font-size="14">reject: risk 1.00</text>
+    <rect class="badge badge-green" x="134" y="214" width="178" height="34" rx="17" />
+    <text x="223" y="236" text-anchor="middle" fill="#087f5b" font-weight="850" font-size="14">accept: predicates pass</text>
+  </g>
+
+  <path class="arrow trace-red" d="M540 274C604 272 604 196 652 196" />
+  <path class="arrow trace-green" d="M540 210C606 206 606 302 652 302" />
+  <path class="arrow" d="M742 250H806" />
+  <path class="arrow" d="M798 242l10 8l-10 8" />
+
+  <g transform="translate(650 126)">
+    <rect class="gate gate-hot" x="0" y="0" width="196" height="82" rx="12" />
+    <text class="label" x="20" y="32">hard geometry</text>
+    <text class="small" x="20" y="58">collision, clearance, target contact</text>
+
+    <rect class="gate gate-ok" x="0" y="110" width="196" height="82" rx="12" />
+    <text class="label" x="20" y="142">latent risk set</text>
+    <text class="small" x="20" y="168">probe risk + conformal gate</text>
+
+    <rect x="0" y="248" width="196" height="82" rx="12" fill="#dff2ea" stroke="#087f5b" stroke-width="2.5" />
+    <text x="20" y="280" fill="#087f5b" font-weight="860" font-size="15">selected grasp</text>
+    <text class="small" x="20" y="306">highest score after filters</text>
+  </g>
+</svg>
+
