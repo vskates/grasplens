@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>GraspLens | Interpretable Runtime Assurance for Learned Grasping</title>
+    <meta
+      name="description"
+      content="GraspLens is a synthetic R&D benchmark for learned robotic grasping under distribution shift, with formal safety predicates, sparse probes, and runtime filtering."
+    />
+    <meta property="og:title" content="GraspLens" />
+    <meta
+      property="og:description"
+      content="Interpretable runtime assurance benchmark for learned robotic grasping."
+    />
+    <meta property="og:type" content="website" />
+    <link rel="stylesheet" href="assets/styles.css" />
+  </head>
+  <body>
+    <header class="site-header" aria-label="Primary navigation">
+      <a class="brand" href="#top" aria-label="GraspLens home">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span>GraspLens</span>
+      </a>
+      <nav class="nav-links" aria-label="Page sections">
+        <a href="#method">Method</a>
+        <a href="#benchmark">Benchmark</a>
+        <a href="#results">Results</a>
+        <a href="#limits">Limits</a>
+      </nav>
+      <a class="repo-link" href="https://github.com/vskates/grasplens">GitHub</a>
+    </header>
+
+    <main id="top">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-media" aria-hidden="true">
+          <img src="assets/figures/example_scene.png" alt="" />
+        </div>
+        <div class="hero-shade" aria-hidden="true"></div>
+        <div class="hero-content">
+          <p class="author-line">
+            Research demo by
+            <a href="https://www.linkedin.com/in/ekaterina-vasyagina-bentley-3b357a39a/">
+              Ekaterina Vasyagina
+            </a>
+          </p>
+          <p class="eyebrow">Synthetic model organism for robot safety</p>
+          <h1 id="hero-title">GraspLens</h1>
+          <p class="hero-copy">
+            A runtime assurance benchmark for learned robotic grasping. It tests whether
+            formal geometry checks and sparse activation probes can reject unsafe grasp
+            choices under distribution shift.
+          </p>
+          <div class="hero-actions" aria-label="Project links">
+            <a class="button primary" href="#results">View results</a>
+            <a class="button secondary" href="https://github.com/vskates/grasplens">Open repository</a>
+          </div>
+          <dl class="hero-stats" aria-label="Default run summary">
+            <div>
+              <dt>Train scenes</dt>
+              <dd>2,000</dd>
+            </div>
+            <div>
+              <dt>Test scenes</dt>
+              <dd>1,000</dd>
+            </div>
+            <div>
+              <dt>Test candidates</dt>
+              <dd>50,210</dd>
+            </div>
+          </dl>
+        </div>
+      </section>
+
+      <section class="section lead-section" aria-labelledby="summary-title">
+        <div class="section-grid">
+          <div>
+            <p class="section-label">Problem</p>
+            <h2 id="summary-title">The learned scorer fails where the test distribution changes.</h2>
+          </div>
+          <div class="lead-copy">
+            <p>
+              The repository has no real robot training data yet. GraspLens therefore uses
+              generated shelf scenes with exact ground-truth safety labels. The learned
+              scorer is trained on a shortcut: in train scenes, red objects usually indicate
+              the target. In shifted test scenes, red distractors are common.
+            </p>
+            <p>
+              The point is not to claim real-world safety. The point is to create a small,
+              inspectable failure mode for grasp ranking and measure which runtime checks
+              catch it.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section band" id="method" aria-labelledby="method-title">
+        <div class="section-grid">
+          <div>
+            <p class="section-label">Method</p>
+            <h2 id="method-title">One scorer, four selectors.</h2>
+          </div>
+          <div class="method-flow" aria-label="GraspLens pipeline">
+            <div class="flow-item">
+              <span>1</span>
+              <strong>Generate candidates</strong>
+              <p>Top-down shelf scene, object boxes, obstacles, grasp rectangles.</p>
+            </div>
+            <div class="flow-item">
+              <span>2</span>
+              <strong>Score grasps</strong>
+              <p>Small MLP-style scorer ranks candidates and exposes hidden activations.</p>
+            </div>
+            <div class="flow-item">
+              <span>3</span>
+              <strong>Check geometry</strong>
+              <p>Hard predicates reject collision, wrong-object, low-clearance and hazard cases.</p>
+            </div>
+            <div class="flow-item">
+              <span>4</span>
+              <strong>Probe latent risk</strong>
+              <p>Sparse logistic probes estimate unsafe concepts from hidden activations.</p>
+            </div>
+            <div class="flow-item">
+              <span>5</span>
+              <strong>Calibrate</strong>
+              <p>Split conformal prediction gates aggregate unsafe risk.</p>
+            </div>
+            <div class="flow-item">
+              <span>6</span>
+              <strong>Select grasp</strong>
+              <p>Choose the highest learned score among accepted candidates.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="formal-title">
+        <div class="section-grid">
+          <div>
+            <p class="section-label">Formal setup</p>
+            <h2 id="formal-title">Safety is a constraint, not a learned preference.</h2>
+          </div>
+          <div class="formal-blocks">
+            <div class="formula-panel">
+              <p>For scene <code>x</code> and candidate set <code>G(x)</code>, define:</p>
+              <pre><code>S_geo(x) = { g in G(x) : h_j(x, g) >= 0 for every hard predicate j }</code></pre>
+            </div>
+            <div class="formula-panel">
+              <p>The full selector uses learned score only after hard filtering:</p>
+              <pre><code>g*(x) = argmax score_theta(x, g)
+        subject to g in S_geo(x)
+        and unsafe not in C_alpha(z_theta(x, g))</code></pre>
+            </div>
+            <p class="note">
+              The conformal set is calibration for latent residual risk. It does not replace
+              the geometric predicates.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section band" id="benchmark" aria-labelledby="benchmark-title">
+        <div class="section-grid">
+          <div>
+            <p class="section-label">Benchmark</p>
+            <h2 id="benchmark-title">Synthetic data with exact labels.</h2>
+          </div>
+          <div class="benchmark-layout">
+            <div class="benchmark-text">
+              <p>
+                Each scene contains one target, several distractors, shelf boundaries,
+                random obstacles, and fragile or hazardous tags. Candidate grasps are
+                oriented rectangles sampled around each object.
+              </p>
+              <p>
+                Labels are computed directly from geometry: target contact, wrong-object
+                contact, collision, low approach clearance, semantic hazard, and final
+                success. This makes the benchmark reproducible before real robot logs exist.
+              </p>
+              <ul class="tight-list">
+                <li>Policy backend in this run: NumPy MLP fallback.</li>
+                <li>Train candidates: 99,560.</li>
+                <li>Shifted test candidates: 50,210.</li>
+                <li>Conformal test coverage: 0.913.</li>
+              </ul>
+            </div>
+            <figure class="image-frame">
+              <img
+                src="assets/figures/example_scene.png"
+                alt="Example shelf scene where the learned baseline selects a red distractor and GraspLens selects the target."
+              />
+              <figcaption>
+                Example shifted scene. Red outline: learned baseline. Green outline:
+                full GraspLens selection.
+              </figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+
+      <section class="section results-section" id="results" aria-labelledby="results-title">
+        <div class="section-grid">
+          <div>
+            <p class="section-label">Results</p>
+            <h2 id="results-title">The full filter removes almost all unsafe selections in this benchmark.</h2>
+          </div>
+          <div>
+            <div class="metric-strip" aria-label="Key result metrics">
+              <div>
+                <span>Baseline unsafe rate</span>
+                <strong>0.918</strong>
+              </div>
+              <div>
+                <span>Full unsafe rate</span>
+                <strong>0.004</strong>
+              </div>
+              <div>
+                <span>Baseline success</span>
+                <strong>0.078</strong>
+              </div>
+              <div>
+                <span>Full success</span>
+                <strong>0.901</strong>
+              </div>
+            </div>
+
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Method</th>
+                    <th>Unsafe</th>
+                    <th>Wrong object</th>
+                    <th>Collision</th>
+                    <th>Low clearance</th>
+                    <th>Hazard</th>
+                    <th>Success</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Baseline</td>
+                    <td>0.918</td>
+                    <td>0.861</td>
+                    <td>0.002</td>
+                    <td>0.918</td>
+                    <td>0.084</td>
+                    <td>0.078</td>
+                  </tr>
+                  <tr>
+                    <td>Geometry</td>
+                    <td>0.004</td>
+                    <td>0.001</td>
+                    <td>0.000</td>
+                    <td>0.004</td>
+                    <td>0.000</td>
+                    <td>0.685</td>
+                  </tr>
+                  <tr>
+                    <td>Probe</td>
+                    <td>0.642</td>
+                    <td>0.315</td>
+                    <td>0.004</td>
+                    <td>0.642</td>
+                    <td>0.018</td>
+                    <td>0.349</td>
+                  </tr>
+                  <tr class="strong-row">
+                    <td>GraspLens full</td>
+                    <td>0.004</td>
+                    <td>0.001</td>
+                    <td>0.000</td>
+                    <td>0.004</td>
+                    <td>0.000</td>
+                    <td>0.901</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="figure-grid">
+              <figure class="image-frame">
+                <img src="assets/figures/unsafe_rate_by_method.png" alt="Unsafe grasp rate by selection method." />
+                <figcaption>Unsafe grasp rate by selector.</figcaption>
+              </figure>
+              <figure class="image-frame">
+                <img src="assets/figures/success_rate_by_method.png" alt="Success rate by selection method." />
+                <figcaption>Task success by selector.</figcaption>
+              </figure>
+              <figure class="image-frame">
+                <img src="assets/figures/probe_auroc_by_concept.png" alt="Probe AUROC values for safety concepts." />
+                <figcaption>Sparse probe AUROC on shifted test candidates.</figcaption>
+              </figure>
+              <figure class="image-frame">
+                <img src="assets/figures/activation_patching_effect.png" alt="Activation patching effect on unsafe ranking." />
+                <figcaption>Activation steering along aggregate unsafe direction.</figcaption>
+              </figure>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section band" aria-labelledby="algorithms-title">
+        <div class="section-grid">
+          <div>
+            <p class="section-label">Algorithms</p>
+            <h2 id="algorithms-title">The implementation is deliberately small.</h2>
+          </div>
+          <div class="algorithm-grid">
+            <article>
+              <h3>Scene generator</h3>
+              <p>Samples products, distractors, obstacles, hazards, and a train/test color shortcut.</p>
+            </article>
+            <article>
+              <h3>Grasp sampler</h3>
+              <p>Builds oriented rectangular candidates around each object with approach vectors.</p>
+            </article>
+            <article>
+              <h3>Geometry predicates</h3>
+              <p>Checks shelf collision, obstacle collision, target contact, non-target contact, and clearance.</p>
+            </article>
+            <article>
+              <h3>Learned scorer</h3>
+              <p>MLP-style scorer trained on noisy shortcut-biased imitation rewards.</p>
+            </article>
+            <article>
+              <h3>Sparse probes</h3>
+              <p>L1 logistic probes map hidden activations to safety concepts and top hidden dimensions.</p>
+            </article>
+            <article>
+              <h3>Runtime selector</h3>
+              <p>Compares max-score baseline, hard geometry, calibrated probe rejection, and the combined filter.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="limits" aria-labelledby="limits-title">
+        <div class="section-grid">
+          <div>
+            <p class="section-label">Limitations</p>
+            <h2 id="limits-title">What this result does and does not show.</h2>
+          </div>
+          <div class="limits-grid">
+            <div>
+              <h3>Does show</h3>
+              <ul>
+                <li>A reproducible shortcut failure in learned grasp ranking.</li>
+                <li>A hard safety layer that rejects unsafe candidates by construction.</li>
+                <li>Activation-level probes that track safety concepts on shifted scenes.</li>
+                <li>A clean interface for replacing synthetic candidates with robot-generated candidates.</li>
+              </ul>
+            </div>
+            <div>
+              <h3>Does not show</h3>
+              <ul>
+                <li>Real robot safety.</li>
+                <li>Generalization to camera noise, depth artifacts, or control errors.</li>
+                <li>Safety for unmodeled hazards outside the predicate set.</li>
+                <li>Interpretability claims for a full VLA model.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section artifacts" aria-labelledby="artifacts-title">
+        <div class="section-grid">
+          <div>
+            <p class="section-label">Artifacts</p>
+            <h2 id="artifacts-title">Reproducible files.</h2>
+          </div>
+          <div class="artifact-actions">
+            <a href="https://github.com/vskates/grasplens">Repository</a>
+            <a href="assets/data/results.json">Results JSON</a>
+            <a href="assets/data/metrics.csv">Metrics CSV</a>
+            <a href="https://github.com/vskates/grasplens/blob/main/proposal.md">Proposal</a>
+          </div>
+          <div class="run-command">
+            <code>python experiments/run_benchmark.py --train-scenes 2000 --test-scenes 1000 --seed 0</code>
+            <button type="button" data-copy-command aria-label="Copy run command">Copy</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <span>GraspLens</span>
+      <span>Ekaterina Vasyagina</span>
+      <span>Runtime assurance for learned grasping</span>
+    </footer>
+
+    <script src="assets/site.js"></script>
+  </body>
+</html>
+
