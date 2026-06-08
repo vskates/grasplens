@@ -6,7 +6,7 @@
     <title>GraspLens | Interpretable Runtime Assurance for Learned Grasping</title>
     <meta
       name="description"
-      content="GraspLens is a synthetic R&D benchmark for learned robotic grasping under distribution shift, with formal safety predicates, sparse probes, and runtime filtering."
+      content="GraspLens is an R&D benchmark for learned robotic grasping under distribution shift, with formal safety predicates, sparse probes, and runtime filtering."
     />
     <meta property="og:title" content="GraspLens" />
     <meta
@@ -23,6 +23,7 @@
         <span>GraspLens</span>
       </a>
       <nav class="nav-links" aria-label="Page sections">
+        <a href="#system">System</a>
         <a href="#method">Method</a>
         <a href="#benchmark">Benchmark</a>
         <a href="#results">Results</a>
@@ -39,12 +40,12 @@
         <div class="hero-shade" aria-hidden="true"></div>
         <div class="hero-content">
           <p class="author-line">
-            Research demo by
+            Research project by
             <a href="https://www.linkedin.com/in/ekaterina-vasyagina-bentley-3b357a39a/">
               Ekaterina Vasyagina
             </a>
           </p>
-          <p class="eyebrow">Synthetic model organism for robot safety</p>
+          <p class="eyebrow">R&D benchmark for learned grasping assurance</p>
           <h1 id="hero-title">GraspLens</h1>
           <p class="hero-copy">
             A runtime assurance benchmark for learned robotic grasping. It tests whether
@@ -80,25 +81,65 @@
           </div>
           <div class="lead-copy">
             <p>
-              The repository has no real robot training data yet. GraspLens therefore uses
-              generated shelf scenes with exact ground-truth safety labels. The learned
-              scorer is trained on a shortcut: in train scenes, red objects usually indicate
-              the target. In shifted test scenes, red distractors are common.
+              The repository does not include robot logs or real grasp demonstrations. The
+              current run uses generated shelf scenes with exact geometry labels. The learned
+              scorer is trained on a shortcut-biased imitation target: in train scenes, red
+              objects usually indicate the target. In shifted test scenes, red distractors are
+              common.
             </p>
             <p>
-              The point is not to claim real-world safety. The point is to create a small,
-              inspectable failure mode for grasp ranking and measure which runtime checks
-              catch it.
+              This gives a controlled setting for studying grasp ranking under distribution
+              shift: every candidate has a learned score, hidden activations, and formal
+              predicate labels. The runtime layer can then be measured against known unsafe
+              selections.
             </p>
           </div>
         </div>
       </section>
 
-      <section class="section band" id="method" aria-labelledby="method-title">
+      <section class="section band" id="system" aria-labelledby="system-title">
+        <div class="section-grid">
+          <div>
+            <p class="section-label">System model</p>
+            <h2 id="system-title">Where the learned model sits in the assurance pipeline.</h2>
+          </div>
+          <div class="technical-stack">
+            <figure class="diagram-frame">
+              <img
+                src="assets/system-pipeline.svg"
+                alt="System pipeline: scene and grasp candidates feed a learned scorer, hard safety predicates, sparse probes, conformal calibration, and a final selector."
+              />
+              <figcaption>
+                Data path for one scene. The scorer provides utility; the assurance layer
+                decides which scored candidates remain executable.
+              </figcaption>
+            </figure>
+            <div class="model-facts">
+              <div>
+                <span>Input</span>
+                <strong>scene x, candidates G(x)</strong>
+                <p>Each candidate has pose, object-relative features, color/semantic tags, and local clearance features.</p>
+              </div>
+              <div>
+                <span>Learned model</span>
+                <strong>MLP-style grasp scorer</strong>
+                <p>The scorer outputs utility score <code>s_theta(x,g)</code> and hidden activation <code>z_theta(x,g)</code>.</p>
+              </div>
+              <div>
+                <span>Safety layer</span>
+                <strong>geometry + probes + conformal gate</strong>
+                <p>Hard predicates define <code>S_geo</code>; sparse probes estimate latent unsafe risk; conformal calibration produces <code>C_alpha</code>.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="method" aria-labelledby="method-title">
         <div class="section-grid">
           <div>
             <p class="section-label">Method</p>
-            <h2 id="method-title">One scorer, four selectors.</h2>
+            <h2 id="method-title">One learned scorer, four selection rules.</h2>
           </div>
           <div class="method-stack">
             <div class="method-flow" aria-label="GraspLens pipeline">
@@ -110,7 +151,7 @@
               <div class="flow-item">
                 <span>2</span>
                 <strong>Score grasps</strong>
-                <p>Small MLP-style scorer ranks candidates and exposes hidden activations.</p>
+                <p>MLP-style scorer ranks candidates and exposes hidden activations.</p>
               </div>
               <div class="flow-item">
                 <span>3</span>
@@ -150,9 +191,19 @@
         <div class="section-grid">
           <div>
             <p class="section-label">Formal setup</p>
-            <h2 id="formal-title">Safety is a constraint, not a learned preference.</h2>
+            <h2 id="formal-title">The selector separates utility from acceptability.</h2>
           </div>
           <div class="formal-blocks">
+            <figure class="diagram-frame theory-frame">
+              <img
+                src="assets/theory-selector.svg"
+                alt="Mathematical selector diagram defining learned score, geometric safe set, conformal risk set, and final selected grasp."
+              />
+              <figcaption>
+                The learned scorer ranks candidates. The final selection is constrained by
+                hard geometry and calibrated latent risk.
+              </figcaption>
+            </figure>
             <div class="formula-panel">
               <p>For scene <code>x</code> and candidate set <code>G(x)</code>, define:</p>
               <pre><code>S_geo(x) = { g in G(x) : h_j(x, g) >= 0 for every hard predicate j }</code></pre>
@@ -175,7 +226,7 @@
         <div class="section-grid">
           <div>
             <p class="section-label">Benchmark</p>
-            <h2 id="benchmark-title">Synthetic data with exact labels.</h2>
+            <h2 id="benchmark-title">Generated scenes with exact labels.</h2>
           </div>
           <div class="benchmark-layout">
             <div class="benchmark-text">
@@ -190,7 +241,7 @@
                 success. This makes the benchmark reproducible before real robot logs exist.
               </p>
               <ul class="tight-list">
-                <li>Policy backend in this run: NumPy MLP fallback.</li>
+                <li>Policy backend in this run: NumPy implementation of the MLP-style scorer.</li>
                 <li>Train candidates: 99,560.</li>
                 <li>Shifted test candidates: 50,210.</li>
                 <li>Conformal test coverage: 0.913.</li>
@@ -316,7 +367,7 @@
         <div class="section-grid">
           <div>
             <p class="section-label">Algorithms</p>
-            <h2 id="algorithms-title">The implementation is deliberately small.</h2>
+            <h2 id="algorithms-title">Algorithms implemented in the repository.</h2>
           </div>
           <div class="algorithm-grid">
             <article>
@@ -351,22 +402,22 @@
         <div class="section-grid">
           <div>
             <p class="section-label">Limitations</p>
-            <h2 id="limits-title">What this result does and does not show.</h2>
+            <h2 id="limits-title">Scope of the current run.</h2>
           </div>
           <div class="limits-grid">
             <div>
-              <h3>Does show</h3>
+              <h3>Covered in this run</h3>
               <ul>
                 <li>A reproducible shortcut failure in learned grasp ranking.</li>
                 <li>A hard safety layer that rejects unsafe candidates by construction.</li>
                 <li>Activation-level probes that track safety concepts on shifted scenes.</li>
-                <li>A clean interface for replacing synthetic candidates with robot-generated candidates.</li>
+                <li>A clean interface for replacing generated candidates with robot-generated candidates.</li>
               </ul>
             </div>
             <div>
-              <h3>Does not show</h3>
+              <h3>Outside current run</h3>
               <ul>
-                <li>Real robot safety.</li>
+                <li>Hardware execution or closed-loop robot validation.</li>
                 <li>Generalization to camera noise, depth artifacts, or control errors.</li>
                 <li>Safety for unmodeled hazards outside the predicate set.</li>
                 <li>Interpretability claims for a full VLA model.</li>
@@ -386,7 +437,6 @@
             <a href="https://github.com/vskates/grasplens">Repository</a>
             <a href="assets/data/results.json">Results JSON</a>
             <a href="assets/data/metrics.csv">Metrics CSV</a>
-            <a href="https://github.com/vskates/grasplens/blob/main/proposal.md">Proposal</a>
           </div>
           <div class="run-command">
             <code>python experiments/run_benchmark.py --train-scenes 2000 --test-scenes 1000 --seed 0</code>

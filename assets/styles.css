@@ -302,6 +302,11 @@ p {
   gap: 28px;
 }
 
+.technical-stack {
+  display: grid;
+  gap: 24px;
+}
+
 .flow-item {
   min-height: 190px;
   padding: 24px;
@@ -390,6 +395,14 @@ pre {
   box-shadow: var(--shadow);
 }
 
+.diagram-frame {
+  margin: 0;
+  overflow-x: auto;
+  background: #ffffff;
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+}
+
 .image-frame img {
   width: 100%;
   aspect-ratio: 1.62 / 1;
@@ -397,14 +410,65 @@ pre {
   background: #ffffff;
 }
 
+.diagram-frame img {
+  width: 100%;
+  min-width: 760px;
+  aspect-ratio: 1.78 / 1;
+  object-fit: contain;
+  background: #f7faf7;
+}
+
+.theory-frame img {
+  aspect-ratio: 2.08 / 1;
+  background: #ffffff;
+}
+
 .trace-frame img {
   background: #f7faf7;
 }
 
-.image-frame figcaption {
+.image-frame figcaption,
+.diagram-frame figcaption {
   padding: 14px 16px 16px;
   color: var(--muted);
   border-top: 1px solid var(--line);
+  font-size: 14px;
+}
+
+.model-facts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+}
+
+.model-facts div {
+  min-height: 154px;
+  padding: 20px;
+  background: #ffffff;
+}
+
+.model-facts span {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--green);
+  font-size: 12px;
+  font-weight: 820;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.model-facts strong {
+  display: block;
+  margin-bottom: 10px;
+  color: var(--ink);
+  font-size: 18px;
+  line-height: 1.22;
+}
+
+.model-facts p {
+  margin: 0;
   font-size: 14px;
 }
 
@@ -615,8 +679,13 @@ td {
   .algorithm-grid,
   .figure-grid,
   .limits-grid,
-  .metric-strip {
+  .metric-strip,
+  .model-facts {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .model-facts div:nth-child(3) {
+    grid-column: 1 / -1;
   }
 
   .run-command {
@@ -663,8 +732,17 @@ td {
   .figure-grid,
   .limits-grid,
   .metric-strip,
+  .model-facts,
   .run-command {
     grid-template-columns: 1fr;
+  }
+
+  .diagram-frame img {
+    min-width: 700px;
+  }
+
+  .model-facts div:nth-child(3) {
+    grid-column: auto;
   }
 
   .section {

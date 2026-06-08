@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" role="img" aria-labelledby="title desc">
+  <title id="title">GraspLens system pipeline</title>
+  <desc id="desc">A technical diagram of the data path from generated shelf scene and grasp candidates through learned scoring, hard predicates, sparse probes, conformal calibration, selectors, and metrics.</desc>
+  <style>
+    svg {
+      background: #f7faf7;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    .title { fill: #17201d; font-size: 34px; font-weight: 880; }
+    .subtitle { fill: #65716c; font-size: 17px; font-weight: 620; }
+    .box { fill: #ffffff; stroke: #d6ddd8; stroke-width: 2; }
+    .box-green { fill: #dff2ea; stroke: #087f5b; }
+    .box-red { fill: #f8e2e7; stroke: #b21d3a; }
+    .box-blue { fill: #e8f1f7; stroke: #386f99; }
+    .box-amber { fill: #fff1de; stroke: #c8751a; }
+    .label { fill: #17201d; font-size: 18px; font-weight: 850; }
+    .small { fill: #65716c; font-size: 13px; font-weight: 680; }
+    .code { fill: #17201d; font-size: 15px; font-weight: 780; font-family: "SFMono-Regular", Consolas, monospace; }
+    .arrow { fill: none; stroke: #9aa5a0; stroke-width: 3.2; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow); }
+    .arrow-green { stroke: #087f5b; }
+    .arrow-red { stroke: #b21d3a; }
+    .dash { stroke-dasharray: 7 8; }
+    .stage { fill: #087f5b; font-size: 12px; font-weight: 850; letter-spacing: 0.08em; }
+    .panel { fill: #fbfdfb; stroke: #d6ddd8; stroke-width: 1.5; }
+    .pulse { animation: pulse 4.8s ease-in-out infinite; transform-origin: center; }
+    @keyframes pulse {
+      0%, 100% { opacity: 0.76; }
+      45%, 68% { opacity: 1; }
+    }
+  </style>
+  <defs>
+    <marker id="arrow" markerWidth="11" markerHeight="11" refX="9" refY="5.5" orient="auto">
+      <path d="M0,0 L10,5.5 L0,11 Z" fill="#9aa5a0" />
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="1280" height="720" fill="#f7faf7" />
+  <text class="title" x="46" y="56">System pipeline</text>
+  <text class="subtitle" x="46" y="86">For each scene, GraspLens scores grasp candidates and applies runtime assurance before selection.</text>
+
+  <rect class="panel" x="42" y="122" width="1196" height="546" rx="18" />
+  <text class="stage" x="74" y="164">SCENE AND CANDIDATES</text>
+  <text class="stage" x="410" y="164">LEARNED SCORING</text>
+  <text class="stage" x="714" y="164">ASSURANCE LAYER</text>
+  <text class="stage" x="1050" y="164">OUTPUTS</text>
+
+  <g transform="translate(70 190)">
+    <rect class="box" x="0" y="0" width="230" height="88" rx="12" />
+    <text class="label" x="22" y="34">Shelf scene x</text>
+    <text class="small" x="22" y="58">target, distractors, shelf, obstacles</text>
+    <rect class="box" x="0" y="122" width="230" height="88" rx="12" />
+    <text class="label" x="22" y="156">Candidate set G(x)</text>
+    <text class="small" x="22" y="180">oriented grasp rectangles</text>
+    <rect class="box-blue" x="0" y="244" width="230" height="88" rx="12" />
+    <text class="label" x="22" y="278">Feature vector φ(x,g)</text>
+    <text class="small" x="22" y="302">pose, object, color, local geometry</text>
+  </g>
+
+  <path class="arrow" d="M300 234H378" />
+  <path class="arrow" d="M300 356H378" />
+  <path class="arrow" d="M300 478H378" />
+
+  <g transform="translate(380 190)">
+    <rect class="box-blue pulse" x="0" y="82" width="250" height="126" rx="14" />
+    <text class="label" x="24" y="122">MLP-style scorer</text>
+    <text class="code" x="24" y="152">sθ(x,g)</text>
+    <text class="small" x="104" y="152">utility score</text>
+    <text class="code" x="24" y="180">zθ(x,g)</text>
+    <text class="small" x="104" y="180">hidden activation</text>
+    <rect class="box" x="0" y="244" width="250" height="88" rx="12" />
+    <text class="label" x="24" y="278">Baseline selector</text>
+    <text class="code" x="24" y="304">argmax_g sθ(x,g)</text>
+  </g>
+
+  <path class="arrow arrow-red" d="M630 478C670 478 664 556 704 556" />
+  <path class="arrow" d="M630 306H702" />
+  <path class="arrow dash" d="M505 398V332" />
+
+  <g transform="translate(704 190)">
+    <rect class="box-amber" x="0" y="0" width="250" height="88" rx="12" />
+    <text class="label" x="22" y="34">Hard predicates</text>
+    <text class="small" x="22" y="58">collision, contact, clearance, hazard</text>
+    <rect class="box-green" x="0" y="122" width="250" height="88" rx="12" />
+    <text class="label" x="22" y="156">Geometric safe set</text>
+    <text class="code" x="22" y="182">S_geo(x)</text>
+    <rect class="box-blue" x="0" y="244" width="250" height="88" rx="12" />
+    <text class="label" x="22" y="278">Sparse probes</text>
+    <text class="small" x="22" y="302">risk concepts from zθ(x,g)</text>
+    <rect class="box-green" x="0" y="366" width="250" height="88" rx="12" />
+    <text class="label" x="22" y="400">Conformal gate</text>
+    <text class="code" x="22" y="426">unsafe ∉ Cα(zθ)</text>
+  </g>
+
+  <path class="arrow" d="M954 234H1018" />
+  <path class="arrow" d="M954 356H1018" />
+  <path class="arrow" d="M954 478H1018" />
+  <path class="arrow arrow-green" d="M954 600C990 600 986 556 1018 556" />
+
+  <g transform="translate(1018 190)">
+    <rect class="box-green pulse" x="0" y="214" width="180" height="112" rx="14" />
+    <text class="label" x="22" y="252">Full selector</text>
+    <text class="small" x="22" y="278">max score among</text>
+    <text class="small" x="22" y="300">accepted candidates</text>
+    <rect class="box" x="0" y="366" width="180" height="88" rx="12" />
+    <text class="label" x="22" y="400">Metrics</text>
+    <text class="small" x="22" y="424">unsafe, wrong object, success</text>
+  </g>
+
+  <path class="arrow arrow-green" d="M1108 516V556" />
+  <path class="arrow" d="M1108 384V516" />
+</svg>
