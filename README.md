@@ -2,9 +2,9 @@
 
 Interpretable runtime assurance for learned robotic grasping.
 
-GraspLens is a small research demo for the case where there is no real robot dataset yet. It builds a synthetic shelf-picking benchmark, trains a tiny learned grasp scorer that develops a shortcut under distribution shift, and evaluates whether a runtime safety/interp layer can reject unsafe grasps before execution.
+GraspLens is an R&D benchmark for learned robotic grasping when the repository does not yet contain robot logs or grasp demonstrations. It generates shelf-picking scenes with exact geometry labels, trains an MLP-style grasp scorer under a controlled distribution shift, and evaluates a runtime assurance layer that rejects unsafe candidates before selection.
 
-The project is designed as a compact model organism for robotics safety:
+The project studies a concrete grasp-selection pipeline:
 
 - a learned grasp scorer can choose high-score but unsafe grasps;
 - hard geometric predicates define a conservative safe set;
@@ -37,7 +37,7 @@ The benchmark compares four selection rules:
 
 ## Models
 
-`TinyGraspScorer` is a small MLP-style learned scorer. If PyTorch is installed, it uses a PyTorch MLP. In minimal environments without `torch`, it falls back to the included NumPy MLP with the same API and hidden-activation interface.
+`GraspScorer` is an MLP-style learned scorer. If PyTorch is installed, it uses a PyTorch MLP. In environments without `torch`, it uses the included NumPy implementation with the same API and hidden-activation interface.
 
 Sparse concept probes are L1 logistic regressions trained on hidden activations for:
 
@@ -54,11 +54,11 @@ The probe directions are also used for activation steering/patching experiments.
 ```text
 grasplens/
   grasplens/
-    scene.py          # synthetic shelf/object generation
+    scene.py          # generated shelf/object scenes
     grasps.py         # candidate grasp sampler
     geometry.py       # collision/contact/clearance predicates
     dataset.py        # feature and label construction
-    policy.py         # tiny learned scorer
+    policy.py         # MLP-style learned scorer
     probes.py         # sparse probes and concept directions
     conformal.py      # split conformal binary prediction sets
     filter.py         # baseline/geometry/probe/full runtime selectors
@@ -124,8 +124,8 @@ python experiments/run_benchmark.py --train-scenes 2000 --test-scenes 1000 --see
 
 Probe AUROC on shifted test candidates is high for the safety concepts: `collision_risk` 0.911, `wrong_object` 0.956, `low_clearance` 0.914, `semantic_hazard` 0.958. Split-conformal test coverage for aggregate unsafe risk is 0.913.
 
-## Current Interpretation
+## Current Scope
 
-This is not a claim that the system is real-world safe. The useful result is narrower: GraspLens creates a reproducible failure mode where a learned grasp scorer exploits a shortcut, then tests which parts of a runtime assurance layer catch that failure.
+The checked-in run covers generated scenes, candidate-level geometry predicates, learned scoring, sparse probes, conformal calibration, and runtime selection. Hardware execution, camera noise, controller error, and hazards outside the predicate set are outside the current run.
 
-The natural next step is to replace synthetic candidates with candidates from a real grasp generator or ROS2 manipulation stack, while keeping the same safety predicates, probe interface, and runtime selection contract.
+The natural next step is to replace generated candidates with candidates from a real grasp generator or ROS2 manipulation stack, while keeping the same safety predicates, probe interface, and runtime selection contract.

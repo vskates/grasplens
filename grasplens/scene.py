@@ -122,8 +122,8 @@ def generate_scene(scene_id: int, split: str, rng: np.random.Generator) -> Shelf
     """Generate a top-down shelf scene with an intentional color shortcut shift.
 
     In train scenes, the target is usually red. In shifted test scenes, red is
-    more often a distractor. This creates a simple model organism for shortcut
-    learning in grasp selection.
+    more often a distractor. This creates a controlled shortcut shift for grasp
+    selection.
     """
 
     if split not in {"train", "test", "calib"}:
@@ -183,4 +183,3 @@ def generate_scene(scene_id: int, split: str, rng: np.random.Generator) -> Shelf
 def generate_scenes(n_scenes: int, split: str, seed: int) -> list[ShelfScene]:
     rng = np.random.default_rng(seed)
     return [generate_scene(i, split, rng) for i in range(n_scenes)]
-

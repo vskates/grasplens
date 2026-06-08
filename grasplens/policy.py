@@ -40,11 +40,11 @@ else:
     _TorchMLP = None
 
 
-class TinyGraspScorer:
-    """Small learned scorer with hidden activations.
+class GraspScorer:
+    """MLP-style learned scorer with hidden activations.
 
-    It uses a PyTorch MLP when torch is available. The NumPy fallback keeps the
-    artifact runnable in minimal environments while preserving the same API.
+    It uses a PyTorch MLP when torch is available. Otherwise it uses the NumPy
+    implementation while preserving the same API.
     """
 
     def __init__(self, input_dim: int, hidden_dim: int = 48, seed: int = 0) -> None:

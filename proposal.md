@@ -8,7 +8,7 @@ GraspLens is an interpretable runtime assurance layer for learned robotic graspi
 
 Robotic grasping systems increasingly use learned policies, diffusion grasp generators, or VLA-style models to rank actions. These models can look competent on average while relying on shortcuts that fail under distribution shift. In shelf picking, a shortcut can become physical risk: the robot may select a wrong object, clip a shelf wall, approach through clutter, or choose a grasp on a fragile/hazardous item.
 
-There is no real training dataset in this repository yet. The MVP therefore uses a synthetic benchmark as a model organism. The point is to make the failure mode and the monitoring layer reproducible before connecting the idea to a real ROS2/VLA manipulation stack.
+The repository does not yet contain robot logs or grasp demonstrations. The current benchmark therefore uses generated shelf scenes with exact geometry labels. This makes the failure mode, learned representation, and monitoring layer reproducible before connecting the same runtime contract to a ROS2/VLA manipulation stack.
 
 ## Threat Model
 
@@ -67,9 +67,9 @@ z' = z + alpha * v_unsafe
 
 and measures whether unsafe candidates move upward in the learned ranking. This gives causal evidence that the learned scorer represents a risk-relevant direction, rather than only a post-hoc label.
 
-## MVP Experiment
+## Experiment
 
-The synthetic benchmark generates top-down shelf scenes with rectangular products, obstacles, and candidate grasp rectangles. The train distribution makes red objects strongly correlated with the target. The shifted test distribution makes red distractors common.
+The benchmark generates top-down shelf scenes with rectangular products, obstacles, and candidate grasp rectangles. The train distribution makes red objects strongly correlated with the target. The shifted test distribution makes red distractors common.
 
 The learned scorer is trained on a noisy imitation target that overweights the red-object shortcut. On the shifted test set, this produces high-scoring wrong-object and unsafe grasps.
 
@@ -94,13 +94,13 @@ Metrics:
 - conformal coverage;
 - activation patching effect.
 
-## Expected Result
+## Result
 
-The expected result is not "robot safety solved." The intended contribution is a small, inspectable benchmark where learned grasp scoring fails under distribution shift and a runtime assurance layer makes the failure visible and easier to control.
+The checked-in run produces a reproducible shortcut failure in learned grasp ranking and compares which runtime checks reject that failure. The result is scoped to generated scenes, candidate-level predicates, learned scoring, sparse probes, conformal calibration, and the final selection rule.
 
 ## Path to Real Robotics
 
-The synthetic grasp candidates can later be replaced by:
+The generated grasp candidates can later be replaced by:
 
 - candidates from a diffusion grasp generator;
 - candidates from a ROS2 `/predict_grasp_pose` service;
@@ -108,4 +108,3 @@ The synthetic grasp candidates can later be replaced by:
 - logs from a real shelf-picking robot.
 
 The reusable parts are the runtime contract: candidate grasps in, hard predicates and latent risk estimates in the middle, selected grasp plus explanation out.
-

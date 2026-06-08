@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" role="img" aria-labelledby="title desc">
+  <title id="title">GraspLens selector theory</title>
+  <desc id="desc">A mathematical diagram showing candidate features, the learned scorer, hard predicates, sparse probes, conformal calibration, the score-only baseline, and the constrained runtime selector.</desc>
+  <style>
+    svg {
+      background: #ffffff;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    .title { fill: #17201d; font-size: 33px; font-weight: 880; }
+    .subtitle { fill: #65716c; font-size: 16px; font-weight: 620; }
+    .box { fill: #fbfdfb; stroke: #d6ddd8; stroke-width: 2; }
+    .green { fill: #dff2ea; stroke: #087f5b; }
+    .red { fill: #f8e2e7; stroke: #b21d3a; }
+    .blue { fill: #e8f1f7; stroke: #386f99; }
+    .amber { fill: #fff1de; stroke: #c8751a; }
+    .label { fill: #17201d; font-size: 18px; font-weight: 850; }
+    .small { fill: #65716c; font-size: 13px; font-weight: 680; }
+    .math { fill: #17201d; font-size: 16px; font-family: "SFMono-Regular", Consolas, monospace; font-weight: 760; }
+    .caption { fill: #087f5b; font-size: 12px; font-weight: 850; letter-spacing: 0.08em; }
+    .arrow { fill: none; stroke: #9aa5a0; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow); }
+    .arrow-green { stroke: #087f5b; }
+    .arrow-red { stroke: #b21d3a; }
+    .dash { stroke-dasharray: 7 8; }
+  </style>
+  <defs>
+    <marker id="arrow" markerWidth="11" markerHeight="11" refX="9" refY="5.5" orient="auto">
+      <path d="M0,0 L10,5.5 L0,11 Z" fill="#9aa5a0" />
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="1280" height="720" fill="#ffffff" />
+  <text class="title" x="46" y="56">Selector theory</text>
+  <text class="subtitle" x="46" y="86">The learned model estimates utility. Acceptability is enforced by explicit predicates and calibrated latent risk.</text>
+
+  <g transform="translate(446 122)">
+    <text class="caption" x="0" y="-18">CANDIDATE STATE</text>
+    <rect class="box" x="0" y="0" width="388" height="88" rx="14" />
+    <text class="label" x="24" y="34">Scene-candidate pair</text>
+    <text class="math" x="24" y="64">(x, g),  g ∈ G(x),  features φ(x,g)</text>
+  </g>
+
+  <g transform="translate(72 260)">
+    <text class="caption" x="0" y="-18">LEARNED UTILITY</text>
+    <rect class="box blue" x="0" y="0" width="292" height="112" rx="14" />
+    <text class="label" x="22" y="36">MLP-style scorer</text>
+    <text class="math" x="22" y="68">fθ(φ(x,g)) → sθ(x,g)</text>
+    <text class="math" x="22" y="94">hidden zθ(x,g)</text>
+  </g>
+
+  <g transform="translate(494 260)">
+    <text class="caption" x="0" y="-18">HARD SAFETY</text>
+    <rect class="box amber" x="0" y="0" width="292" height="112" rx="14" />
+    <text class="label" x="22" y="36">Predicate vector</text>
+    <text class="math" x="22" y="68">h(x,g) = [h1,...,hm]</text>
+    <text class="small" x="22" y="94">collision, approach, contact, hazard</text>
+  </g>
+
+  <g transform="translate(916 260)">
+    <text class="caption" x="0" y="-18">LATENT RISK</text>
+    <rect class="box blue" x="0" y="0" width="292" height="112" rx="14" />
+    <text class="label" x="22" y="36">Sparse probes</text>
+    <text class="math" x="22" y="68">p(c | zθ(x,g))</text>
+    <text class="small" x="22" y="94">concept risks from hidden activations</text>
+  </g>
+
+  <path class="arrow" d="M640 210V250" />
+  <path class="arrow" d="M550 210C430 230 270 220 220 260" />
+  <path class="arrow" d="M730 210C840 230 1018 220 1062 260" />
+  <path class="arrow" d="M364 316H484" />
+
+  <g transform="translate(72 438)">
+    <text class="caption" x="0" y="-18">SCORE-ONLY BASELINE</text>
+    <rect class="box red" x="0" y="0" width="292" height="92" rx="14" />
+    <text class="label" x="22" y="34">Baseline selector</text>
+    <text class="math" x="22" y="64">argmax_g sθ(x,g)</text>
+  </g>
+
+  <g transform="translate(446 438)">
+    <text class="caption" x="0" y="-18">GEOMETRIC ACCEPTABILITY</text>
+    <rect class="box green" x="0" y="0" width="388" height="104" rx="14" />
+    <text class="label" x="22" y="34">Safe candidate set</text>
+    <text class="math" x="22" y="66">S_geo(x) = { g : h_j(x,g) ≥ 0 ∀j }</text>
+    <text class="small" x="22" y="90">Candidates outside this set are rejected.</text>
+  </g>
+
+  <g transform="translate(916 438)">
+    <text class="caption" x="0" y="-18">CALIBRATED RESIDUAL RISK</text>
+    <rect class="box green" x="0" y="0" width="292" height="104" rx="14" />
+    <text class="label" x="22" y="34">Conformal gate</text>
+    <text class="math" x="22" y="66">unsafe ∉ Cα(zθ(x,g))</text>
+    <text class="small" x="22" y="90">Calibrated on held-out candidates.</text>
+  </g>
+
+  <path class="arrow arrow-red" d="M218 372V428" />
+  <path class="arrow arrow-green" d="M640 372V428" />
+  <path class="arrow arrow-green" d="M1062 372V428" />
+
+  <g transform="translate(282 604)">
+    <rect class="box green" x="0" y="0" width="716" height="74" rx="16" />
+    <text class="label" x="24" y="30">Runtime selector</text>
+    <text class="math" x="24" y="56">g*(x) = argmax sθ(x,g),  g ∈ S_geo(x),  unsafe ∉ Cα(zθ(x,g))</text>
+  </g>
+
+  <path class="arrow arrow-green" d="M640 542V594" />
+  <path class="arrow arrow-green" d="M1062 542C1000 584 908 584 820 604" />
+  <path class="arrow dash" d="M364 294C500 226 780 226 916 294" />
+</svg>

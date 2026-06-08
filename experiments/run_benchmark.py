@@ -15,7 +15,7 @@ from grasplens.conformal import fit_binary_conformal
 from grasplens.dataset import build_dataset
 from grasplens.filter import select_all
 from grasplens.metrics import activation_patching_effect, evaluate_selections
-from grasplens.policy import TinyGraspScorer
+from grasplens.policy import GraspScorer
 from grasplens.probes import train_probes, unsafe_probability
 from grasplens.scene import generate_scenes
 from grasplens.visualization import (
@@ -27,7 +27,7 @@ from grasplens.visualization import (
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Run the GraspLens synthetic benchmark.")
+    parser = argparse.ArgumentParser(description="Run the GraspLens generated-scene benchmark.")
     parser.add_argument("--train-scenes", type=int, default=2000)
     parser.add_argument("--test-scenes", type=int, default=1000)
     parser.add_argument("--seed", type=int, default=0)
@@ -53,7 +53,7 @@ def main() -> None:
     figures_dir = args.output_dir / "figures"
     figures_dir.mkdir(parents=True, exist_ok=True)
 
-    print("Generating synthetic train/test scenes...")
+    print("Generating train/test scenes...")
     train_scenes = generate_scenes(args.train_scenes, "train", args.seed)
     test_scenes = generate_scenes(args.test_scenes, "test", args.seed + 10_000)
 
@@ -72,7 +72,7 @@ def main() -> None:
     )
 
     print("Training learned grasp scorer...")
-    scorer = TinyGraspScorer(train_data.x.shape[1], hidden_dim=args.hidden_dim, seed=args.seed)
+    scorer = GraspScorer(train_data.x.shape[1], hidden_dim=args.hidden_dim, seed=args.seed)
     history = scorer.fit(train_data.x, train_data.y, epochs=args.epochs)
     train_scores, train_hidden = scorer.predict_with_hidden(train_data.x)
     test_scores, test_hidden = scorer.predict_with_hidden(test_data.x)
