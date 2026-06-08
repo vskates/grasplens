@@ -5,6 +5,8 @@ from typing import Iterable
 
 import numpy as np
 
+from grasplens.specs import SCENE_SCALE
+
 
 COLORS = ("red", "blue", "green", "yellow", "purple")
 COLOR_TO_ID = {name: idx for idx, name in enumerate(COLORS)}
@@ -59,7 +61,7 @@ class ShelfScene:
     split: str
     objects: tuple[ShelfObject, ...]
     obstacles: tuple[Obstacle, ...]
-    shelf_bounds: tuple[float, float, float, float] = (0.04, 0.04, 0.96, 0.96)
+    shelf_bounds: tuple[float, float, float, float] = SCENE_SCALE.shelf_bounds_norm
 
     @property
     def target(self) -> ShelfObject:
@@ -93,13 +95,16 @@ def _sample_object(
     hazard: bool,
     existing: Iterable[ShelfObject],
 ) -> ShelfObject:
-    w = float(rng.uniform(0.075, 0.13))
-    h = float(rng.uniform(0.055, 0.115))
+    w = float(rng.uniform(*SCENE_SCALE.object_width_norm))
+    h = float(rng.uniform(*SCENE_SCALE.object_height_norm))
     for _ in range(200):
-        x = float(rng.uniform(0.16, 0.84))
-        y = float(rng.uniform(0.16, 0.84))
+        x = float(rng.uniform(*SCENE_SCALE.object_center_norm))
+        y = float(rng.uniform(*SCENE_SCALE.object_center_norm))
         obj = ShelfObject(object_id, label, x, y, w, h, color, fragile, hazard)
-        if all(not _rects_overlap(obj.bounds, other.bounds, pad=0.05) for other in existing):
+        if all(
+            not _rects_overlap(obj.bounds, other.bounds, pad=SCENE_SCALE.object_separation_pad_norm)
+            for other in existing
+        ):
             return obj
     return ShelfObject(object_id, label, x, y, w, h, color, fragile, hazard)
 
@@ -163,12 +168,15 @@ def generate_scene(scene_id: int, split: str, rng: np.random.Generator) -> Shelf
     for _ in range(int(rng.integers(1, 4))):
         for _attempt in range(100):
             obs = Obstacle(
-                x=float(rng.uniform(0.13, 0.87)),
-                y=float(rng.uniform(0.13, 0.87)),
-                w=float(rng.uniform(0.04, 0.08)),
-                h=float(rng.uniform(0.04, 0.10)),
+                x=float(rng.uniform(*SCENE_SCALE.obstacle_center_norm)),
+                y=float(rng.uniform(*SCENE_SCALE.obstacle_center_norm)),
+                w=float(rng.uniform(*SCENE_SCALE.obstacle_width_norm)),
+                h=float(rng.uniform(*SCENE_SCALE.obstacle_height_norm)),
             )
-            if all(not _rects_overlap(obs.bounds, obj.bounds, pad=0.045) for obj in objects):
+            if all(
+                not _rects_overlap(obs.bounds, obj.bounds, pad=SCENE_SCALE.obstacle_separation_pad_norm)
+                for obj in objects
+            ):
                 obstacles.append(obs)
                 break
 

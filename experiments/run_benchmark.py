@@ -18,6 +18,7 @@ from grasplens.metrics import activation_patching_effect, evaluate_selections
 from grasplens.policy import GraspScorer
 from grasplens.probes import train_probes, unsafe_probability
 from grasplens.scene import generate_scenes
+from grasplens.specs import benchmark_spec_payload
 from grasplens.visualization import (
     plot_activation_effect,
     plot_example_scene,
@@ -132,12 +133,14 @@ def main() -> None:
         }
         for name, result in probes.items()
     }
+    benchmark_spec = benchmark_spec_payload(candidates_per_object=args.candidates_per_object)
     result = {
         "project": "GraspLens",
         "seed": args.seed,
         "train_scenes": args.train_scenes,
         "test_scenes": args.test_scenes,
         "candidates_per_object": args.candidates_per_object,
+        "benchmark_spec": benchmark_spec,
         "num_train_candidates": int(len(train_data.x)),
         "num_test_candidates": int(len(test_data.x)),
         "policy_backend": history.backend,
@@ -156,6 +159,7 @@ def main() -> None:
 
     results_path = args.output_dir / "results.json"
     results_path.write_text(json.dumps(result, indent=2), encoding="utf-8")
+    (args.output_dir / "benchmark_spec.json").write_text(json.dumps(benchmark_spec, indent=2), encoding="utf-8")
     pd.DataFrame(metrics).to_csv(args.output_dir / "metrics.csv", index=False)
 
     print("Rendering figures...")

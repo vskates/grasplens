@@ -10,6 +10,24 @@ Robotic grasping systems increasingly use learned policies, diffusion grasp gene
 
 The repository does not yet contain robot logs or grasp demonstrations. The current benchmark therefore uses generated shelf scenes with exact geometry labels. This makes the failure mode, learned representation, and monitoring layer reproducible before connecting the same runtime contract to a ROS2/VLA manipulation stack.
 
+## Experimental Envelope
+
+The benchmark is expressed in metric tabletop coordinates. Normalized scene coordinates map to a `0.72 m x 0.72 m` shelf-picking ROI. The reference hardware envelope is a Franka Research 3-class 7-DoF arm, a Robotiq 2F-85-class parallel-jaw gripper, and an overhead RGB-D camera producing a calibrated top-down occupancy map.
+
+Concrete parameters:
+
+- robot envelope: `855 mm` reach, `3 kg` payload;
+- gripper envelope: `85 mm` opening;
+- shelf interior: `0.662 m x 0.662 m`;
+- object boxes: `54-94 mm` by `40-83 mm`;
+- obstacle boxes: `29-58 mm` by `29-72 mm`;
+- grasp rectangle: `115.2 mm x 39.6 mm`;
+- approach sweep: `18.0-129.6 mm`, seven samples;
+- low-clearance threshold: `8.6 mm`;
+- default sampling: `10` grasp candidates per object.
+
+These parameters define the measurement envelope for candidate-level predicates. The repository does not contain hardware execution logs or Isaac Sim rollout traces.
+
 ## Threat Model
 
 The robot receives a scene observation and a set of candidate grasps. A learned scorer assigns each candidate a utility score. Under distribution shift, the scorer may rank an unsafe grasp highly because it learned a spurious feature.
@@ -98,13 +116,14 @@ Metrics:
 
 The checked-in run produces a reproducible shortcut failure in learned grasp ranking and compares which runtime checks reject that failure. The result is scoped to generated scenes, candidate-level predicates, learned scoring, sparse probes, conformal calibration, and the final selection rule.
 
-## Path to Real Robotics
+## Path to Isaac and Real Robotics
 
 The generated grasp candidates can later be replaced by:
 
 - candidates from a diffusion grasp generator;
 - candidates from a ROS2 `/predict_grasp_pose` service;
 - VLA policy action proposals in a simulator such as ManiSkill, LIBERO, or RoboMimic;
+- Isaac Sim rollout traces with the same candidate and predicate contract;
 - logs from a real shelf-picking robot.
 
 The reusable parts are the runtime contract: candidate grasps in, hard predicates and latent risk estimates in the middle, selected grasp plus explanation out.

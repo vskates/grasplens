@@ -4,6 +4,7 @@
   "train_scenes": 2000,
   "test_scenes": 1000,
   "candidates_per_object": 10,
+  "benchmark_spec_file": "benchmark_spec.json",
   "num_train_candidates": 99560,
   "num_test_candidates": 50210,
   "policy_backend": "numpy",

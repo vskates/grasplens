@@ -6,6 +6,7 @@ import numpy as np
 
 from grasplens.grasps import GraspCandidate
 from grasplens.scene import Obstacle, ShelfObject, ShelfScene
+from grasplens.specs import PREDICATE_THRESHOLDS
 
 
 @dataclass(frozen=True)
@@ -120,16 +121,20 @@ def evaluate_grasp(scene: ShelfScene, grasp: GraspCandidate) -> GraspPredicates:
             hazard_overlap = max(hazard_overlap, frac)
 
     obstacle_overlap = max((_overlap_fraction(points, obs) for obs in scene.obstacles), default=0.0)
-    target_contact = target_overlap > 0.08
-    wrong_object = non_target_overlap > 0.10 and non_target_overlap >= target_overlap * 0.65
-    semantic_hazard = hazard_overlap > 0.08
-    collision = shelf_collision or obstacle_overlap > 0.08
+    target_contact = target_overlap > PREDICATE_THRESHOLDS.target_contact_overlap_fraction
+    wrong_object = (
+        non_target_overlap > PREDICATE_THRESHOLDS.wrong_object_overlap_fraction
+        and non_target_overlap >= target_overlap * PREDICATE_THRESHOLDS.wrong_object_relative_overlap
+    )
+    semantic_hazard = hazard_overlap > PREDICATE_THRESHOLDS.hazard_overlap_fraction
+    collision = shelf_collision or obstacle_overlap > PREDICATE_THRESHOLDS.collision_overlap_fraction
 
     rects = [obs.bounds for obs in scene.obstacles]
     rects.extend(obj.bounds for obj in scene.objects if not obj.is_target)
     x0, y0, x1, y1 = scene.shelf_bounds
     approach_samples = []
-    for offset in np.linspace(0.025, 0.18, 7):
+    approach_start, approach_stop, approach_steps = PREDICATE_THRESHOLDS.approach_sweep_offsets_norm
+    for offset in np.linspace(approach_start, approach_stop, int(approach_steps)):
         approach_samples.append(_sample_gripper_points(grasp, offset=offset))
     approach_points = np.concatenate(approach_samples, axis=0)
 
@@ -146,7 +151,7 @@ def evaluate_grasp(scene: ShelfScene, grasp: GraspCandidate) -> GraspPredicates:
     )
     obstacle_margin = _min_distance_points_to_rects(approach_points, rects)
     min_clearance = float(min(shelf_margin, obstacle_margin))
-    low_clearance = min_clearance < 0.012
+    low_clearance = min_clearance < PREDICATE_THRESHOLDS.low_clearance_norm
 
     unsafe = collision or wrong_object or low_clearance or semantic_hazard
     success = target_contact and not unsafe

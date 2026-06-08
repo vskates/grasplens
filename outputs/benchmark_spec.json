@@ -1,0 +1,59 @@
+{
+  "reference_hardware": {
+    "arm_class": "Franka Research 3-class 7-DoF arm",
+    "arm_dof": 7,
+    "arm_reach_m": 0.855,
+    "arm_payload_kg": 3.0,
+    "gripper_class": "Robotiq 2F-85-class parallel-jaw gripper",
+    "gripper_opening_m": 0.085,
+    "camera_class": "overhead RGB-D camera",
+    "camera_stream": "calibrated top-down occupancy map"
+  },
+  "scene_scale": {
+    "workspace_size_m": 0.72,
+    "shelf_bounds_norm": [0.04, 0.04, 0.96, 0.96],
+    "object_width_norm": [0.075, 0.13],
+    "object_height_norm": [0.055, 0.115],
+    "object_center_norm": [0.16, 0.84],
+    "object_separation_pad_norm": 0.05,
+    "obstacle_width_norm": [0.04, 0.08],
+    "obstacle_height_norm": [0.04, 0.1],
+    "obstacle_center_norm": [0.13, 0.87],
+    "obstacle_separation_pad_norm": 0.045,
+    "shelf_interior_m": [0.6624, 0.6624],
+    "object_width_m": [0.054, 0.0936],
+    "object_height_m": [0.0396, 0.0828],
+    "obstacle_width_m": [0.0288, 0.0576],
+    "obstacle_height_m": [0.0288, 0.072]
+  },
+  "grasp_geometry": {
+    "rectangle_length_norm": 0.16,
+    "rectangle_width_norm": 0.055,
+    "side_jitter_sigma_fraction": 0.16,
+    "side_offset_fraction": [0.0, 0.36],
+    "angle_jitter_sigma_rad": 0.28,
+    "off_object_jitter_probability": 0.18,
+    "off_object_jitter_sigma_norm": 0.085,
+    "candidates_per_object_default": 10,
+    "rectangle_length_m": 0.1152,
+    "rectangle_width_m": 0.0396,
+    "off_object_jitter_sigma_m": 0.0612,
+    "candidates_per_object": 10
+  },
+  "predicate_thresholds": {
+    "target_contact_overlap_fraction": 0.08,
+    "wrong_object_overlap_fraction": 0.1,
+    "wrong_object_relative_overlap": 0.65,
+    "hazard_overlap_fraction": 0.08,
+    "collision_overlap_fraction": 0.08,
+    "approach_sweep_offsets_norm": [0.025, 0.18, 7],
+    "low_clearance_norm": 0.012,
+    "approach_sweep_offsets_m": [0.018, 0.1296, 7],
+    "low_clearance_m": 0.0086
+  },
+  "validation_scope": {
+    "included_artifact": "offline generated-scene benchmark with exact candidate labels",
+    "isaac_ros2_status": "interface contract specified; no Isaac or robot rollout logs are included",
+    "measured_unit": "per-scene selected grasp predicate outcome"
+  }
+}

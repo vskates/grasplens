@@ -24,6 +24,26 @@ The benchmark represents a top-down shelf-picking task. Each scene contains:
 
 The train distribution makes red objects strongly correlated with the target. The shifted test distribution breaks that shortcut by making red distractors common. This creates wrong-object, collision, low-clearance, and semantic-hazard failures.
 
+## Experimental Envelope
+
+The benchmark is specified in metric tabletop coordinates rather than pixel-only image space. Normalized scene coordinates map to a `0.72 m x 0.72 m` top-down shelf ROI.
+
+| Component | Reference used in this benchmark |
+| --- | --- |
+| Robot envelope | Franka Research 3-class 7-DoF arm, `855 mm` reach, `3 kg` payload |
+| Gripper envelope | Robotiq 2F-85-class parallel-jaw gripper, `85 mm` opening |
+| Perception envelope | Overhead RGB-D camera producing a calibrated top-down occupancy map |
+| Shelf ROI | `0.72 m x 0.72 m` workspace; `0.662 m x 0.662 m` shelf interior |
+| Object boxes | `54-94 mm` width, `40-83 mm` height |
+| Obstacle boxes | `29-58 mm` width, `29-72 mm` height |
+| Grasp rectangle | `115.2 mm x 39.6 mm` |
+| Approach sweep | `18.0-129.6 mm`, seven samples along the approach vector |
+| Clearance gate | minimum approach clearance `>= 8.6 mm` |
+
+The reference envelope is used to set scene scale and predicate thresholds. The checked-in metrics are from the offline generated-scene benchmark. Robot logs and Isaac Sim rollouts are not included in this repository.
+
+Public hardware references for the envelope: [Franka Research 3](https://franka.de/products/franka-research-3), [Robotiq 2F-85](https://robotiq.com/products/2f85-140-adaptive-robot-gripper), and [Intel RealSense D435](https://www.intelrealsense.com/depth-camera-d435/).
+
 ## Methods
 
 The benchmark compares four selection rules:
@@ -63,12 +83,14 @@ grasplens/
     conformal.py      # split conformal binary prediction sets
     filter.py         # baseline/geometry/probe/full runtime selectors
     metrics.py        # evaluation and activation patching metrics
+    specs.py          # metric robot/scene/grasp/predicate envelope
     visualization.py  # benchmark figures
   experiments/
     run_benchmark.py
     make_figures.py
   outputs/
     results.json
+    benchmark_spec.json
     metrics.csv
     figures/
 ```
@@ -103,6 +125,7 @@ Outputs are written to:
 
 ```text
 outputs/results.json
+outputs/benchmark_spec.json
 outputs/metrics.csv
 outputs/figures/
 ```
@@ -126,6 +149,6 @@ Probe AUROC on shifted test candidates is high for the safety concepts: `collisi
 
 ## Current Scope
 
-The checked-in run covers generated scenes, candidate-level geometry predicates, learned scoring, sparse probes, conformal calibration, and runtime selection. Hardware execution, camera noise, controller error, and hazards outside the predicate set are outside the current run.
+The checked-in run covers generated scenes, metric candidate geometry, candidate-level predicates, learned scoring, sparse probes, conformal calibration, and runtime selection. Hardware execution logs, Isaac Sim rollout traces, camera noise, controller error, and hazards outside the predicate set are outside the current run.
 
 The natural next step is to replace generated candidates with candidates from a real grasp generator or ROS2 manipulation stack, while keeping the same safety predicates, probe interface, and runtime selection contract.
